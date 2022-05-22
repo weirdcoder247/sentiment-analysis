@@ -5,6 +5,7 @@ import torch
 from transformers import DefaultDataCollator
 import tensorflow as tf
 import datasets
+from time import time
 
 start_time = time()
 # User Input
@@ -122,7 +123,7 @@ def main():
 	train_dataset, eval_dataset = tokenize_train_test(model_name, train_df, test_df)
 
 	# Convert tokenized data to tensors
-	tf_train_dataset, tf_validation_data = tokenized_to_tf_dataset(train_dataset, eval_dataset)
+	tf_train_dataset, tf_validation_dataset = tokenized_to_tf_dataset(train_dataset, eval_dataset)
 
 	# Train and save the model
 	model_train_and_save(model_name, tf_train_dataset, tf_validation_dataset, output_path, output_model_name)
