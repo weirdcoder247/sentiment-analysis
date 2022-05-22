@@ -1,11 +1,10 @@
 # Install Transformers library;
 from transformers import pipeline
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import tensorflow as tf
+from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification
 import pandas as pd
 import os
 import torch
-from sklearn.metrics import classification_report, auc, accuracy_score, confusion_matrix, f1_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 from time import time
 
 start_time = time()
@@ -35,13 +34,9 @@ test_df.drop(["sentiment"], axis=1, inplace=True)
 train_df.columns = ["review", "sentiment_label"]
 test_df.columns = ["review", "sentiment_label"]
 
-# print(train_df.head())
-# print(test_df.head())
 
+# Approach 1
 # sentiment_pipeline = pipeline("sentiment-analysis")
-
-# tokenizer_kwargs = {'padding':True,'truncation':True,'max_length':512,'return_tensors':'pt'}
-
 # print(sentiment_pipeline(train_df.review.head(20).tolist()))
 
 
@@ -49,17 +44,28 @@ test_df.columns = ["review", "sentiment_label"]
 # model_name = "bert-base-cased"
 model_name = "distilbert-base-uncased-finetuned-sst-2-english"
 device = 0 if torch.cuda.is_available() else -1
-model = AutoModelForSequenceClassification.from_pretrained(model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name, model_max_length=512)
+model = TFDistilBertForSequenceClassification.from_pretrained(model_name)
+tokenizer = DistilBertTokenizer.from_pretrained(model_name, model_max_length=512)
 classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer, device=device, padding=True, truncation=True)
 
-# Model Prediction
+# Model Prediction & Evaluation
+# test_df
 y = classifier(test_df.review.tolist())
 y = [1 if i['label'].lower() == 'positive' else 0 for i in y]
 
-# Model Evaluation
 x = test_df.sentiment_label.tolist()
 
+print("test_df accuracy")
+print(confusion_matrix(y, x))
+print(accuracy_score(y, x))
+
+# train_df
+y = classifier(train_df.review.tolist())
+y = [1 if i['label'].lower() == 'positive' else 0 for i in y]
+
+x = train_df.sentiment_label.tolist()
+
+print("train_df_accuracy")
 print(confusion_matrix(y, x))
 print(accuracy_score(y, x))
 
