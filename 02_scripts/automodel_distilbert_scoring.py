@@ -17,10 +17,10 @@ model_name = "distilbert-base-uncased-finetuned-sst-2-english"
 
 
 def data_import(input_path, train_data_file_name, test_data_file_name):
+
 	train_df = pd.read_csv(input_path + train_data_file_name)
 	test_df = pd.read_csv(input_path + test_data_file_name)
-	train_df = train_df.head(10)
-	test_df = test_df.head(10)
+
 	return train_df, test_df
 
 
