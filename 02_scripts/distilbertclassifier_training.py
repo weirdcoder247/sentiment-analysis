@@ -1,6 +1,6 @@
+# Import Packages
 from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification
 import pandas as pd
-import os
 import torch
 from transformers import DefaultDataCollator
 import tensorflow as tf

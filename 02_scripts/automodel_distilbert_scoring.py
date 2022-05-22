@@ -2,7 +2,6 @@
 from transformers import pipeline
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import pandas as pd
-import os
 import torch
 from sklearn.metrics import accuracy_score, confusion_matrix
 from time import time
@@ -17,15 +16,16 @@ model_name = "distilbert-base-uncased-finetuned-sst-2-english"
 #------------------------------------------------------------------------------#
 
 
-def data_import(input_path, train_data_file_name, test_data_file_name):		
-	
+def data_import(input_path, train_data_file_name, test_data_file_name):
 	train_df = pd.read_csv(input_path + train_data_file_name)
 	test_df = pd.read_csv(input_path + test_data_file_name)
-
+	train_df = train_df.head(10)
+	test_df = test_df.head(10)
 	return train_df, test_df
 
+
 def data_transform(train_df, test_df):
-	
+
 	# Drop ID Column
 	train_df.drop(["review_id"], axis=1, inplace=True)
 	test_df.drop(["review_id"], axis=1, inplace=True)
@@ -43,14 +43,15 @@ def data_transform(train_df, test_df):
 	# Rename Columns
 	train_df.columns = ["review", "sentiment_label"]
 	test_df.columns = ["review", "sentiment_label"]
-	
+
 	return train_df, test_df
 
+
 def model_import(model_name):
-	
-	# 1 for GPU and -1 for CPU	
+
+	# 1 for GPU and -1 for CPU
 	device = 0 if torch.cuda.is_available() else -1
-	
+
 	# Import pre-trained model and tokenizer
 	model = AutoModelForSequenceClassification.from_pretrained(model_name)
 	tokenizer = AutoTokenizer.from_pretrained(model_name, model_max_length=512)
@@ -64,11 +65,12 @@ def model_import(model_name):
 		padding=True,
 		truncation=True
 	)
-	
+
 	return classifier
 
+
 def model_eval(classifier, train_df, test_df):
-	
+
 	# Predict Sentiment of reviews in test_df
 	y = classifier(test_df.review.tolist())
 	y = [1 if i['label'].lower() == 'positive' else 0 for i in y]
@@ -93,6 +95,7 @@ def model_eval(classifier, train_df, test_df):
 	print(confusion_matrix(y, x))
 	print(accuracy_score(y, x))
 
+
 def main():
 	
 	start_time = time()
@@ -111,7 +114,7 @@ def main():
 
 	stop_time = time()
 	print("Execution Time:", stop_time - start_time, "seconds")
-	
+
 if __name__ == "__main__":
 	main()
 
