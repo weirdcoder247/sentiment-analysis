@@ -15,18 +15,17 @@ test_data_file_name = "reviews_test_4000.csv"
 model_name = "distilbert-base-uncased-finetuned-sst-2-english"
 #------------------------------------------------------------------------------#
 
+
 def data_import(input_path, train_data_file_name, test_data_file_name):		
-	
+
 	train_df = pd.read_csv(input_path + train_data_file_name)
 	test_df = pd.read_csv(input_path + test_data_file_name)
 
 	return train_df, test_df
 
 
-
-
 def data_transform(train_df, test_df):
-	
+
 	# Drop ID Column
 	train_df.drop(["review_id"], axis=1, inplace=True)
 	test_df.drop(["review_id"], axis=1, inplace=True)
@@ -46,6 +45,7 @@ def data_transform(train_df, test_df):
 	test_df.columns = ["review", "sentiment_label"]
 	
 	return train_df, test_df
+
 
 def model_import(model_name):
 	
@@ -67,7 +67,6 @@ def model_import(model_name):
 	)
 	
 	return classifier
-
 
 
 def model_eval(classifier, train_df, test_df):
