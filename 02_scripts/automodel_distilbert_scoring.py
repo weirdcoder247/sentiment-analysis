@@ -55,10 +55,10 @@ print(confusion_matrix(y, x))
 print(accuracy_score(y, x))
 
 # train_df
-y = classifier(train_df.review.tail(10000).tolist())
+y = classifier(train_df.review.tolist())
 y = [1 if i['label'].lower() == 'positive' else 0 for i in y]
 
-x = train_df.sentiment_label.tail(10000).tolist()
+x = train_df.sentiment_label.tolist()
 
 print("train_df_accuracy")
 print(confusion_matrix(y, x))
