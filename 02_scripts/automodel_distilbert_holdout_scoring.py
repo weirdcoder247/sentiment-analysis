@@ -42,7 +42,7 @@ def data_transform(holdout_df):
 
 def model_import(model_name):
 
-	# 1 for GPU and -1 for CPU
+	# 0 for GPU and -1 for CPU
 	device = 0 if torch.cuda.is_available() else -1
 
 	# Import pre-trained model and tokenizer
